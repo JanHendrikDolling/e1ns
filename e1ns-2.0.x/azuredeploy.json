@@ -46,7 +46,7 @@
     "apiVersion": "2015-06-15",
     "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]",
     "storageAccountName": "[concat(parameters('dnsLabelPrefix'),'storage123')]",
-    "diagnosticsStorageAccountName": "[concat(parameters('dnsLabelPrefix'),'diagnost123')]"
+    "diagnosticsStorageAccountName": "[concat(parameters('dnsLabelPrefix'),'diagnost123')]",
     "diagnosticsStorageAccountType": "Standard_LRS",
     "storageAccountType": "Premium_LRS"
   },
