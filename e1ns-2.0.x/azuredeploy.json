@@ -119,15 +119,6 @@
                 "accountType": "[variables('storageAccountType')]"
             }
         },
-        {
-            "name": "[variables('diagnosticsStorageAccountName')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "accountType": "[variables('diagnosticsStorageAccountType')]"
-            }
-        },
     {
       "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
@@ -155,7 +146,7 @@
             "version": "latest"
           },
           "osDisk": {
-                        "name": "[parameters('virtualMachineName')]",
+                        "name": "[parameters('vmName')]",
                         "createOption": "fromImage",
                         "vhd": {
                             "uri": "[concat(concat(reference(resourceId(uniquestring(resourceGroup().id), 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('vmName'), '20170214151657.vhd')]"
