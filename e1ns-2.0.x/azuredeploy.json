@@ -26,7 +26,7 @@
       "metadata": {
         "description": "The name for the VM."
       }
-    },
+    }
   },
   "variables": {
     "imagePublisher": "MicrosoftWindowsServer",
@@ -134,7 +134,7 @@
       "name": "[variables('vmName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('diagnosticsStorageAccountName'))]"
       ],
@@ -160,8 +160,7 @@
                         "vhd": {
                             "uri": "[concat(concat(reference(resourceId(uniquestring(resourceGroup().id), 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('vmName'), '20170214151657.vhd')]"
                         }
-                    },
-                    "dataDisks": []
+           }
         },
         "networkProfile": {
           "networkInterfaces": [
