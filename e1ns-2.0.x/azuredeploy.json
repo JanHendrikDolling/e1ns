@@ -42,7 +42,8 @@
     "vmStorageAccountContainerName": "vhds",
     "storageAccountName": "[uniquestring(resourceGroup().id)]",
     "storageAccountType": "Premium_LRS",
-    "dnsLabelPrefix": "[uniquestring(resourceGroup().id)]"
+    "dnsLabelPrefix": "[uniquestring(resourceGroup().id)]",
+    "NetwortSecurityGroupName": "[uniquestring(resourceGroup().id)]"
   },
   "resources": [
     {
@@ -62,6 +63,9 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
+      "dependsOn": [
+          "[concat('Microsoft.Network/networkSecurityGroups/', variables('NetwortSecurityGroupName'))]"
+        ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -113,6 +117,44 @@
                 "accountType": "[variables('storageAccountType')]"
             }
         },
+    {
+        "apiVersion": "[variables('apiVersion')]",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "name": "[variables('NetwortSecurityGroupName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "https",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1010,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+        },
+        "resources": [],
+        "dependsOn": []
+      },
     {
       "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
