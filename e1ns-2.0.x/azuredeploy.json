@@ -27,44 +27,16 @@
         "description": "The name for the VM."
       }
     },
-    "nicName": {
-      "type": "string",
-      "defaultValue": "myVMNic",
-      "metadata": {
-        "description": "The name for the VM's NIC."
-      }
-    },
-    "virtualNetworkName": {
-      "type": "string",
-      "defaultValue": "MyVNET",
-      "metadata": {
-        "description": "The name for the VM's VNET."
-      }
-    },
-    "publicIPAddressName": {
-      "type": "string",
-      "defaultValue": "myPublicIP",
-      "metadata": {
-        "description": "The name for the VM's public IP."
-      }
-    },
-    "subnetName": {
-      "type": "string",
-      "defaultValue": "Subnet",
-      "metadata": {
-        "description": "The name for the VM's Subnet."
-      }
-    }
   },
   "variables": {
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "windowsOSVersion": "2016-Datacenter",
-    "nicName": "[parameters('nicName')]",
+    "nicName": "myVMNic",
     "addressPrefix": "10.0.0.0/16",
-    "subnetName": "[parameters('subnetName')]",
+    "subnetName": "mySubnet",
     "subnetPrefix": "10.0.0.0/24",
-    "publicIPAddressName": "[parameters('publicIPAddressName')]",
+    "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmName": "[parameters('vmName')]",
     "vmSize": "Standard_A2",
@@ -185,11 +157,9 @@
             "typeHandlerVersion": "1.4",
             "settings": {
               "fileUris": [
-                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/ConfigureWinRM.ps1",
-                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/makecert.exe",
-                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/winrmconf.cmd"
+                "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.0.x/init_e1ns.ps1"
               ],
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ConfigureWinRM.ps1 ',variables('hostDNSNameScriptArgument'))]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file init_e1ns.ps1 ',variables('hostDNSNameScriptArgument'))]"
             }
           }
         }
