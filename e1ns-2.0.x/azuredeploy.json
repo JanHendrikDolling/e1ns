@@ -146,7 +146,7 @@
                         "name": "[parameters('vmName')]",
                         "createOption": "fromImage",
                         "vhd": {
-                            "uri": "[concat(concat(reference(resourceGroup().id, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('vmName'), '20170214151657.vhd')]"
+                            "uri": "[concat(concat(concat(reference(resourceGroup().id, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('vmName'), '20170214151657.vhd')]"
                         }
            }
         },
