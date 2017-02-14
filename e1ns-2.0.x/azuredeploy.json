@@ -1,0 +1,237 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_plato_adminPassword": {
+            "defaultValue": null,
+            "type": "SecureString"
+        },
+        "virtualMachines_plato_name": {
+            "defaultValue": "plato",
+            "type": "String"
+        },
+        "networkInterfaces_plato361_name": {
+            "defaultValue": "plato361",
+            "type": "String"
+        },
+        "networkSecurityGroups_plato_nsg_name": {
+            "defaultValue": "plato-nsg",
+            "type": "String"
+        },
+        "publicIPAddresses_plato_ip_name": {
+            "defaultValue": "plato-ip",
+            "type": "String"
+        },
+        "virtualNetworks_plato6_vnet_name": {
+            "defaultValue": "plato6-vnet",
+            "type": "String"
+        },
+        "storageAccounts_plato6diag503_name": {
+            "defaultValue": "plato6diag503",
+            "type": "String"
+        },
+        "storageAccounts_plato6disks345_name": {
+            "defaultValue": "plato6disks345",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Compute/virtualMachines/plato\".",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_plato_name')]",
+            "apiVersion": "2015-06-15",
+            "location": "westeurope",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS2_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[parameters('virtualMachines_plato_name')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccounts_plato6disks345_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_plato_name'),'20170214111022.vhd'))]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_plato_name')]",
+                    "adminUsername": "[concat(parameters('virtualMachines_plato_name'),'-system')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('virtualMachines_plato_adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_plato361_name'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_plato6disks345_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_plato361_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/networkInterfaces/plato361\".",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_plato361_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westeurope",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_plato_ip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_plato6_vnet_name')), '/subnets/default')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_plato_nsg_name'))]"
+                }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_plato_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_plato6_vnet_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_plato_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/networkSecurityGroups/plato-nsg\".",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_plato_nsg_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westeurope",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "https",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1010,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/publicIPAddresses/plato-ip\".",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_plato_ip_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westeurope",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/virtualNetworks/plato6-vnet\".",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_plato6_vnet_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westeurope",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "properties": {
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    }
+                ]
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Storage/storageAccounts/plato6diag503\".",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_plato6diag503_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "westeurope",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Storage/storageAccounts/plato6disks345\".",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_plato6disks345_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "westeurope",
+            "tags": {},
+            "properties": {},
+            "resources": [],
+            "dependsOn": []
+        }
+    ]
+}
