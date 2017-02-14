@@ -14,12 +14,6 @@
         "description": "Password for the Virtual Machine."
       }
     },
-    "dnsLabelPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
-      }
-    },
     "vmName": {
       "type": "string",
       "defaultValue": "MyVM",
@@ -45,8 +39,10 @@
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
     "apiVersion": "2015-06-15",
     "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]",
-    "storageAccountName": "[concat(parameters('dnsLabelPrefix'),'storage123')]",
-    "storageAccountType": "Premium_LRS"
+    "vmStorageAccountContainerName": "vhds",
+    "storageAccountName": "[uniquestring(resourceGroup().id)]",
+    "storageAccountType": "Premium_LRS",
+    "dnsLabelPrefix": "[uniquestring(resourceGroup().id)]"
   },
   "resources": [
     {
@@ -139,16 +135,17 @@
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[variables('windowsOSVersion')]",
+            "sku": "[parameters('windowsOSVersion')]",
             "version": "latest"
           },
           "osDisk": {
-                        "name": "[parameters('vmName')]",
-                        "createOption": "fromImage",
-                        "vhd": {
-                            "uri": "[concat(concat(concat(reference(resourceGroup().id, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('vmName'), '20170214151657.vhd')]"
-                        }
-           }
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('vmName'),'.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
         },
         "networkProfile": {
           "networkInterfaces": [
