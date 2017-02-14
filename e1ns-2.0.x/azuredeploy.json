@@ -1,237 +1,199 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "virtualMachines_plato_adminPassword": {
-            "defaultValue": null,
-            "type": "SecureString"
-        },
-        "virtualMachines_plato_name": {
-            "defaultValue": "plato",
-            "type": "String"
-        },
-        "networkInterfaces_plato361_name": {
-            "defaultValue": "plato361",
-            "type": "String"
-        },
-        "networkSecurityGroups_plato_nsg_name": {
-            "defaultValue": "plato-nsg",
-            "type": "String"
-        },
-        "publicIPAddresses_plato_ip_name": {
-            "defaultValue": "plato-ip",
-            "type": "String"
-        },
-        "virtualNetworks_plato6_vnet_name": {
-            "defaultValue": "plato6-vnet",
-            "type": "String"
-        },
-        "storageAccounts_plato6diag503_name": {
-            "defaultValue": "plato6diag503",
-            "type": "String"
-        },
-        "storageAccounts_plato6disks345_name": {
-            "defaultValue": "plato6disks345",
-            "type": "String"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
     },
-    "variables": {},
-    "resources": [
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Compute/virtualMachines/plato\".",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('virtualMachines_plato_name')]",
-            "apiVersion": "2015-06-15",
-            "location": "westeurope",
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_DS2_v2"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2016-Datacenter",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "name": "[parameters('virtualMachines_plato_name')]",
-                        "createOption": "FromImage",
-                        "vhd": {
-                            "uri": "[concat('https', '://', parameters('storageAccounts_plato6disks345_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_plato_name'),'20170214111022.vhd'))]"
-                        },
-                        "caching": "ReadWrite"
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachines_plato_name')]",
-                    "adminUsername": "[concat(parameters('virtualMachines_plato_name'),'-system')]",
-                    "windowsConfiguration": {
-                        "provisionVMAgent": true,
-                        "enableAutomaticUpdates": true
-                    },
-                    "secrets": [],
-                    "adminPassword": "[parameters('virtualMachines_plato_adminPassword')]"
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_plato361_name'))]"
-                        }
-                    ]
-                }
-            },
-            "resources": [],
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_plato6disks345_name'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_plato361_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/networkInterfaces/plato361\".",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('networkInterfaces_plato361_name')]",
-            "apiVersion": "2016-03-30",
-            "location": "westeurope",
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAddress": "10.0.0.4",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_plato_ip_name'))]"
-                            },
-                            "subnet": {
-                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_plato6_vnet_name')), '/subnets/default')]"
-                            }
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
-                },
-                "enableIPForwarding": false,
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_plato_nsg_name'))]"
-                }
-            },
-            "resources": [],
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_plato_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_plato6_vnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_plato_nsg_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/networkSecurityGroups/plato-nsg\".",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('networkSecurityGroups_plato_nsg_name')]",
-            "apiVersion": "2016-03-30",
-            "location": "westeurope",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "protocol": "TCP",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 1000,
-                            "direction": "Inbound"
-                        }
-                    },
-                    {
-                        "name": "https",
-                        "properties": {
-                            "protocol": "TCP",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "443",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 1010,
-                            "direction": "Inbound"
-                        }
-                    }
-                ]
-            },
-            "resources": [],
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/publicIPAddresses/plato-ip\".",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[parameters('publicIPAddresses_plato_ip_name')]",
-            "apiVersion": "2016-03-30",
-            "location": "westeurope",
-            "properties": {
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4
-            },
-            "resources": [],
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Network/virtualNetworks/plato6-vnet\".",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('virtualNetworks_plato6_vnet_name')]",
-            "apiVersion": "2016-03-30",
-            "location": "westeurope",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.0.0.0/24"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "default",
-                        "properties": {
-                            "addressPrefix": "10.0.0.0/24"
-                        }
-                    }
-                ]
-            },
-            "resources": [],
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Storage/storageAccounts/plato6diag503\".",
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "kind": "Storage",
-            "name": "[parameters('storageAccounts_plato6diag503_name')]",
-            "apiVersion": "2016-01-01",
-            "location": "westeurope",
-            "tags": {},
-            "properties": {},
-            "resources": [],
-            "dependsOn": []
-        },
-        {
-            "comments": "Generalisiert aus Ressource \"/subscriptions/77aaf582-05c1-48a1-81f7-bd19bc13a2a0/resourceGroups/plato6/providers/Microsoft.Storage/storageAccounts/plato6disks345\".",
-            "type": "Microsoft.Storage/storageAccounts",
-            "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
-            },
-            "kind": "Storage",
-            "name": "[parameters('storageAccounts_plato6disks345_name')]",
-            "apiVersion": "2016-01-01",
-            "location": "westeurope",
-            "tags": {},
-            "properties": {},
-            "resources": [],
-            "dependsOn": []
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "defaultValue": "MyVM",
+      "metadata": {
+        "description": "The name for the VM."
+      }
+    },
+    "nicName": {
+      "type": "string",
+      "defaultValue": "myVMNic",
+      "metadata": {
+        "description": "The name for the VM's NIC."
+      }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": "MyVNET",
+      "metadata": {
+        "description": "The name for the VM's VNET."
+      }
+    },
+    "publicIPAddressName": {
+      "type": "string",
+      "defaultValue": "myPublicIP",
+      "metadata": {
+        "description": "The name for the VM's public IP."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "Subnet",
+      "metadata": {
+        "description": "The name for the VM's Subnet."
+      }
+    }
+  },
+  "variables": {
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "windowsOSVersion": "2016-Datacenter",
+    "nicName": "[parameters('nicName')]",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetName": "[parameters('subnetName')]",
+    "subnetPrefix": "10.0.0.0/24",
+    "publicIPAddressName": "[parameters('publicIPAddressName')]",
+    "publicIPAddressType": "Dynamic",
+    "vmName": "[parameters('vmName')]",
+    "vmSize": "Standard_A2",
+    "virtualNetworkName": "[parameters('vmName')]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+    "apiVersion": "2015-06-15",
+    "hostDNSNameScriptArgument": "[concat('*.',resourceGroup().location,'.cloudapp.azure.com')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
         }
-    ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              },
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2016-04-30-preview",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computername": "[variables('vmName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vmName'),'/WinRMCustomScriptExtension')]",
+          "apiVersion": "[variables('apiVersion')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.4",
+            "settings": {
+              "fileUris": [
+                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/ConfigureWinRM.ps1",
+                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/makecert.exe",
+                "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-winrm-windows/winrmconf.cmd"
+              ],
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ConfigureWinRM.ps1 ',variables('hostDNSNameScriptArgument'))]"
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
