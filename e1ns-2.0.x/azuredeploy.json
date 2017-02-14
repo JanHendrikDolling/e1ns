@@ -13,13 +13,6 @@
       "metadata": {
         "description": "Password for the Virtual Machine."
       }
-    },
-    "vmName": {
-      "type": "string",
-      "defaultValue": "MyVM",
-      "metadata": {
-        "description": "The name for the VM."
-      }
     }
   },
   "variables": {
@@ -32,9 +25,9 @@
     "subnetPrefix": "10.0.0.0/24",
     "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
-    "vmName": "[parameters('vmName')]",
+    "vmName": "MyVM",
     "vmSize": "Standard_DS2_v2",
-    "virtualNetworkName": "[parameters('vmName')]",
+    "virtualNetworkName": "[variables('vmName')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
     "apiVersion": "2015-06-15",
