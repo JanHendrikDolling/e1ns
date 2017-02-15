@@ -1,7 +1,7 @@
 ﻿$scio_client = "https://www.hidrive.strato.com/wget/pTrO0OOq"
 $scio_server = "https://www.hidrive.strato.com/wget/8ELu0vwv"
 $scio_db = "https://www.hidrive.strato.com/wget/S1LuUd2Q"
-$e1ns = "https://www.hidrive.strato.com/wget/DTruUPTK" 
+$e1ns = "https://www.hidrive.strato.com/wget/LILO0cfm" 
 $e1ns_config = "https://www.hidrive.strato.com/wget/Y4rOUbCN"  
  
 
