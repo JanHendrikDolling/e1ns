@@ -35,7 +35,7 @@
     "vmStorageAccountContainerName": "vhds",
     "storageAccountName": "[uniquestring(resourceGroup().id)]",
     "storageAccountType": "Premium_LRS",
-    "dnsLabelPrefix": "[concat('e1ns_', uniquestring(resourceGroup().id))]",
+    "dnsLabelPrefix": "[concat('e1ns-', uniquestring(resourceGroup().id))]",
     "NetwortSecurityGroupName": "[uniquestring(resourceGroup().id)]"
   },
   "resources": [
