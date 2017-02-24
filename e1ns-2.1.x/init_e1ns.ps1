@@ -1,8 +1,8 @@
 ﻿$scio_client = "https://www.hidrive.strato.com/wget/lCLuU2G7"
 $scio_server = "https://www.hidrive.strato.com/wget/UAru0rve"
 $scio_db = "https://www.hidrive.strato.com/wget/55ru0SWg"
-$e1ns = "https://www.hidrive.strato.com/wget/Bqru0sQf" 
-$e1ns_config = "https://www.hidrive.strato.com/wget/Y4rOUbCN"  
+$e1ns = "https://www.hidrive.strato.com/wget/s7LO0GH0" 
+$e1ns_config = "https://www.hidrive.strato.com/wget/HpLO0mAk"  
  
 
 New-Item -ItemType Directory -Force -Path c:\setup
