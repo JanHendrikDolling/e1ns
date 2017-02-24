@@ -19,13 +19,13 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "windowsOSVersion": "2016-Datacenter",
-    "vmNetworkName": "myVMNic",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "mySubnet",
     "subnetPrefix": "10.0.0.0/24",
     "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmDatabaseName": "vm-db",
+    "vmDatabaseNetworkName": "[uniquestring(resourceGroup().id)]",
     "vmSize": "Standard_DS2_v2",
     "virtualNetworkName": "e1ns-network",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
@@ -78,7 +78,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('vmNetworkName')]",
+      "name": "[variables('vmDatabaseNetworkName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
@@ -154,7 +154,7 @@
       "name": "[variables('vmDatabaseName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('vmNetworkName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmDatabaseNetworkName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
@@ -185,7 +185,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNetworkName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmDatabaseNetworkName'))]"
             }
           ]
         }

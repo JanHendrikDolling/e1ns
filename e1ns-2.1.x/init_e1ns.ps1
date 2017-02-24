@@ -27,7 +27,7 @@ $out_dir = "c:\setup"
 
 $start_p = $scio_bin + "\sciodbinstall.exe"
 $working_dir = $scio_bin
-$arg = "-i -D " + '"' + $db_dir + '"' + " -P " + $db_name
+$arg = "-i -D " + '"' + $db_dir + '"' + " -N -I 5080 -P " + $db_name
 $stdout = $out_dir + "\stdout.txt" 
 $stderr = $out_dir + "\stderr.txt" 
 
