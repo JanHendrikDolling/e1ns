@@ -54,6 +54,8 @@
     "vmLB-NIName": "[concat(variables('vmLB-Name'),'-NetworkInterface')]",
     "vmDatabaseName": "vm-db",
     "vmDatabaseName-NIName": "[concat(variables('vmDatabaseName'),'-NetworkInterface')]",
+    "vm-ui1-Name": "vm-ui1",
+    "vm-ui1-NIName": "[concat(variables('vm-ui1-Name'),'-NetworkInterface')]",
     "scriptURL": "abc"
   },
   "resources": [
@@ -264,7 +266,7 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('apiVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -318,6 +320,71 @@
           "networkInterfaces": [
             {
               "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vmDatabaseName-NIName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('vm-ui1-NIName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('apiVersion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('BESubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('vm-ui1-Name')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('apiVersion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vm-ui1-NIName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computername": "[variables('vm-ui1-Name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+       "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(variables('vm-ui1-Name'), '-disk')]",
+            "vhd": {
+              "uri": "[concat('http://', variables('storageName'), '.blob.core.windows.net/', variables('vhdContainer'), '/', variables('vm-ui1-Name'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+       "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm-ui1-NIName'))]"
             }
           ]
         }
