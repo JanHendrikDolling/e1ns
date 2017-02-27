@@ -203,7 +203,7 @@
                 "id": "[variables('subnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[variables('webSrvPublicIPAddressName')]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('webSrvPublicIPAddressName'))]"
               }
             }
           }
@@ -273,7 +273,7 @@
                 "id": "[variables('subnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[variables('jumpSrvPublicIPAddressName')]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('jumpSrvPublicIPAddressName'))]"
               }
             }
           }
