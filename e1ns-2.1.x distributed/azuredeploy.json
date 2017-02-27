@@ -36,7 +36,6 @@
     "storageAccountType": "Premium_LRS",
     "webSrvPublicIPAddressName": "e1ns-publicIP",
     "webSrvDnsName": "[concat(toLower(variables('webSrvName')), 'lb')]",
-    "jumpSrvPublicIPAddressName": "e1ns-jump-publicIP",
     "virtualNetworkName": "e1ns-Network",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "VNetAddressPrefix": "10.1.0.0/16",
@@ -49,8 +48,6 @@
     "FESubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('FESubnetName'))]",
 	  "AppSubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('AppSubnetName'))]",
 	  "BESubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('BESubnetName'))]",
-
-
     "webserverNSGName": "webserverNetwortSecurityGroup",
     "blockNSGName": "blockNetwortSecurityGroup",
     "vmLB-Name": "vm-lb",
@@ -191,16 +188,6 @@
         }
       }
     },
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('jumpSrvPublicIPAddressName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "idleTimeoutInMinutes": 4
-      }
-    },
    {
       "name": "[variables('vmLB-NIName')]",
       "type": "Microsoft.Network/networkInterfaces",
@@ -278,7 +265,6 @@
       "apiVersion": "[variables('apiVersion')]",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('jumpSrvPublicIPAddressName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -288,9 +274,6 @@
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
                 "id": "[variables('BESubnetRef')]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('jumpSrvPublicIPAddressName'))]"
               }
             }
           }
@@ -304,8 +287,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('vmDatabaseName-NIName'))]",
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('jumpSrvPublicIPAddressName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('vmDatabaseName-NIName'))]"
       ],
       "properties": {
         "hardwareProfile": {
