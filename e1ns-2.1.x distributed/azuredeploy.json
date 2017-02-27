@@ -318,7 +318,7 @@
        "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vmDatabaseName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('vmDatabaseName-NIName'))]"
             }
           ]
         }
