@@ -35,7 +35,7 @@
     "vmSize": "Standard_DS2_v2",
     "storageAccountType": "Premium_LRS",
     "webSrvPublicIPAddressName": "e1ns-publicIP",
-    "webSrvDnsName": "[concat(toLower(variables('webSrvName')), 'lb', uniquestring(resourceGroup().id))]",
+    "webSrvDnsName": "[concat(toLower(variables('webSrvName')), '-', uniquestring(resourceGroup().id))]",
     "virtualNetworkName": "e1ns-Network",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "VNetAddressPrefix": "10.1.0.0/16",
