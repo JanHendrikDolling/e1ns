@@ -39,12 +39,19 @@
     "jumpSrvPublicIPAddressName": "e1ns-jump-publicIP",
     "virtualNetworkName": "e1ns-Network",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "addressPrefix": "10.0.0.0/16",
-    "subnetName": "e1nsSubnet",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-    "subnetPrefix": "10.0.0.0/24",
+    "VNetAddressPrefix": "10.1.0.0/16",
+	  "FrontendPrefix": "10.1.0.0/24",
+	  "AppPrefix": "10.1.1.0/24",
+	  "BackendPrefix": "10.1.2.0/24",
+    "FESubnetName": "FrontendSubnet",
+	  "AppSubnetName": "AppSubnet",
+	  "BESubnetName": "BackendSubnet",
+    "FESubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('FESubnetName'))]",
+	  "AppSubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('AppSubnetName'))]",
+	  "BESubnetRef": "[concat(variables('vnetID'),'/subnets/', variables('BESubnetName'))]",
+
+
     "webserverNSGName": "webserverNetwortSecurityGroup",
-    "jumpNSGName": "jumpserverNetwortSecurityGroup",
     "blockNSGName": "blockNetwortSecurityGroup",
     "vmLB-Name": "vm-lb",
     "vmLB-NIName": "[concat(variables('vmLB-Name'),'-NetworkInterface')]",
@@ -71,6 +78,20 @@
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "rdp_rule",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
               "direction": "Inbound"
             }
           }
@@ -103,51 +124,47 @@
     },
     {
       "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('jumpNSGName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "rdp_rule",
-            "properties": {
-              "description": "Allow RDP",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "3389",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 100,
-              "direction": "Inbound"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('webserverNSGName'))]",
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('jumpNSGName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('blockNSGName'))]"
       ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefix')]"
+            "[variables('VNetAddressPrefix')]"
           ]
         },
         "subnets": [
-          {
-            "name": "[variables('subnetName')]",
-            "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
+            {
+              "name": "[variables('FESubnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('FrontendPrefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('webserverNSGName'))]"
+                }
+              }
+            },
+            {
+              "name": "[variables('AppSubnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('AppPrefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('blockNSGName'))]"
+                }
+              }
+            },
+            {
+              "name": "[variables('BESubnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('BackendPrefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('blockNSGName'))]"
+                }
+              }
             }
-          }
         ]
       }
     },
@@ -200,7 +217,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
-                "id": "[variables('subnetRef')]"
+                "id": "[variables('FESubnetRef')]"
               },
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('webSrvPublicIPAddressName'))]"
@@ -270,7 +287,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
-                "id": "[variables('subnetRef')]"
+                "id": "[variables('BESubnetRef')]"
               },
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('jumpSrvPublicIPAddressName'))]"
