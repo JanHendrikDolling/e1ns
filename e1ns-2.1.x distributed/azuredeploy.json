@@ -358,7 +358,7 @@
   "location": "[resourceGroup().location]",
   "dependsOn": [
     "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]",
-    "[concat('Microsoft.Compute/virtualMachines/extensions', variables('vmDatabaseName'),'/',variables('initExtensionName'))]"
+    "[concat('Microsoft.Compute/virtualMachines/extensions/', variables('vmDatabaseName'),'/',variables('initExtensionName'))]"
   ],
   "properties":
     {
