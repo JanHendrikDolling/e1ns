@@ -346,8 +346,6 @@
               "[variables('initScriptURL')]"
           ],
           "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -file init.ps1"
-      },
-      "protectedSettings": {
       }
    }
   },
