@@ -357,8 +357,7 @@
   "apiVersion": "[variables('apiVersion')]",
   "location": "[resourceGroup().location]",
   "dependsOn": [
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]",
-    "[concat(variables('vmDatabaseName'),'/',variables('initExtensionName'))]"
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
   ],
   "properties":
     {
