@@ -1,9 +1,10 @@
 ﻿param (
+    [string]$vmDB = "vm-db",
     [Parameter(Mandatory=$true)][string]$vmName
  )
 
 
-$ShareName = "\\vm-db\data"
+$ShareName = "\\" + $vmDB + "\data"
 $ShareSetup = $ShareName + "\setup"
 
 

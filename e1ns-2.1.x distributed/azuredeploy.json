@@ -370,7 +370,7 @@
           "fileUris": [
               "[variables('setupScriptURL')]"
           ],
-          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file setup.ps1', ' -vmName ', variables('vmDatabaseName'))]"
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file setup.ps1', ' -vmDB ', variables('vmDatabaseName'), ' -vmName ', variables('vmDatabaseName'))]"
       }
    }
   },
