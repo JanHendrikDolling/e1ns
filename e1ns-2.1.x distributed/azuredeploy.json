@@ -339,13 +339,15 @@
     {
       "publisher": "Microsoft.Compute",
       "type": "CustomScriptExtension",
-      "typeHandlerVersion": "1.8",
-      "autoUpgradeMinorVersion": true,
+      "typeHandlerVersion": "1.7",
+      "autoUpgradeMinorVersion":true,
       "settings": {
           "fileUris": [
               "[variables('initScriptURL')]"
           ],
           "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -file init.ps1"
+      },
+      "protectedSettings": {
       }
    }
   },
