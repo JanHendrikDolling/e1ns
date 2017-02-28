@@ -56,9 +56,11 @@
     "vmDatabaseName-NIName": "[concat(variables('vmDatabaseName'),'-NetworkInterface')]",
     "vm-ui1-Name": "vm-ui1",
     "vm-ui1-NIName": "[concat(variables('vm-ui1-Name'),'-NetworkInterface')]",
-    "initExtensionName": "initScriptExtension",
     "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
-    "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]"
+    "initExtensionName": "initScriptExtension",
+    "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]",
+    "setupExtensionName": "setupScriptExtension",
+    "setupScriptURL": "[concat(variables('url-prefix'),'/scripts/setup.ps1')]"
   },
   "resources": [
     {
@@ -349,7 +351,30 @@
       }
    }
   },
+  {
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "name": "[concat(variables('vmDatabaseName'),'/',variables('setupExtensionName'))]",
+  "apiVersion": "[variables('apiVersion')]",
+  "location": "[resourceGroup().location]",
+  "dependsOn": [
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]",
+    "[concat('Microsoft.Compute/virtualMachines/extensions', variables('vmDatabaseName'),'/',variables('initExtensionName'))]"
+  ],
+  "properties":
     {
+      "publisher": "Microsoft.Compute",
+      "type": "CustomScriptExtension",
+      "typeHandlerVersion": "1.7",
+      "autoUpgradeMinorVersion":true,
+      "settings": {
+          "fileUris": [
+              "[variables('setupScriptURL')]"
+          ],
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file setup.ps1', ' -vmName ', variables('vmDatabaseName'))]"
+      }
+   }
+  },
+  {
       "name": "[variables('vm-ui1-NIName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
