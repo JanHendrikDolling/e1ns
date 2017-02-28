@@ -343,6 +343,7 @@
       "type": "CustomScriptExtension",
       "typeHandlerVersion": "1.7",
       "autoUpgradeMinorVersion":true,
+      "name": "[variables('initExtensionName')]",
       "settings": {
           "fileUris": [
               "[variables('initScriptURL')]"
@@ -357,7 +358,8 @@
   "apiVersion": "[variables('apiVersion')]",
   "location": "[resourceGroup().location]",
   "dependsOn": [
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]",
+    "[variables('initExtensionName')]"
   ],
   "properties":
     {
