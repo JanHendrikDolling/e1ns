@@ -59,8 +59,8 @@
     "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
     "initExtensionName": "initScriptExtension",
     "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]",
-    "setupExtensionName": "setupScriptExtension",
-    "setupScriptURL": "[concat(variables('url-prefix'),'/scripts/setup.ps1')]"
+    "setupScriptURL": "[concat(variables('url-prefix'),'/scripts/setup.ps1')]",
+    "initScriptExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file init.ps1 -vmDB ', variables('vmDatabaseName'), ' -vmLB ', variables('vmLB-Name'), ' -vmUi1 ', variables('vm-ui1-Name'))]"
   },
   "resources": [
     {
@@ -335,6 +335,8 @@
   "apiVersion": "[variables('apiVersion')]",
   "location": "[resourceGroup().location]",
   "dependsOn": [
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmLB-Name'))]",
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vm-ui1-Name'))]",
     "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
   ],
   "properties":
@@ -345,32 +347,10 @@
       "autoUpgradeMinorVersion":true,
       "settings": {
           "fileUris": [
-              "[variables('initScriptURL')]"
-          ],
-          "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -file init.ps1"
-      }
-   }
-  },
-  {
-  "type": "Microsoft.Compute/virtualMachines/extensions",
-  "name": "[concat(variables('vmDatabaseName'),'/',variables('setupExtensionName'))]",
-  "apiVersion": "[variables('apiVersion')]",
-  "location": "[resourceGroup().location]",
-  "dependsOn": [
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]",
-    "[concat(variables('vmDatabaseName'),'/',variables('initExtensionName'))]"
-  ],
-  "properties":
-    {
-      "publisher": "Microsoft.Compute",
-      "type": "CustomScriptExtension",
-      "typeHandlerVersion": "1.7",
-      "autoUpgradeMinorVersion":true,
-      "settings": {
-          "fileUris": [
+              "[variables('initScriptURL')]",
               "[variables('setupScriptURL')]"
           ],
-          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file setup.ps1', ' -vmDB ', variables('vmDatabaseName'), ' -vmName ', variables('vmDatabaseName'))]"
+          "commandToExecute": "[variables('initScriptExecute')]"
       }
    }
   },
