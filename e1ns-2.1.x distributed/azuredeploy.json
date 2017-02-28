@@ -330,16 +330,16 @@
     {
   "type": "Microsoft.Compute/virtualMachines/extensions",
   "name": "[variables('initExtensionName')]",
-  "apiVersion": "2015-05-01-preview",
+  "apiVersion": "[variables('apiVersion')]",
   "location": "[resourceGroup().location]",
   "dependsOn": [
     "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
   ],
   "properties":
     {
-      "publisher": "Microsoft.Compute",
-      "type": "CustomScriptExtension",
-      "typeHandlerVersion": "1.7",
+      "publisher": "Microsoft.Azure.Extensions",
+      "type": "CustomScript",
+      "typeHandlerVersion": "2.0",
       "autoUpgradeMinorVersion":true,
       "settings": {
           "fileUris": [
