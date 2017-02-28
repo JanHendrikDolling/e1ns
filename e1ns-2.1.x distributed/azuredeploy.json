@@ -56,7 +56,7 @@
     "vmDatabaseName-NIName": "[concat(variables('vmDatabaseName'),'-NetworkInterface')]",
     "vm-ui1-Name": "vm-ui1",
     "vm-ui1-NIName": "[concat(variables('vm-ui1-Name'),'-NetworkInterface')]",
-    "initExtensionName": "initScriptExtension",
+    "initExtensionName": "init/ScriptExtension",
     "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
     "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]"
   },
