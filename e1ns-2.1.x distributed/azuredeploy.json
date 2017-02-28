@@ -328,7 +328,7 @@
       }
     },
     {
-  "type": "extensions",
+  "type": "Microsoft.Compute/virtualMachines/extensions",
   "name": "[variables('initExtensionName')]",
   "apiVersion": "[variables('apiVersion')]",
   "location": "[resourceGroup().location]",
