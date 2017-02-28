@@ -1,7 +1,9 @@
 ﻿param (
+    [string]$adminUser = "plato",
     [string]$vmDB = "vm-db",
     [string]$vmLB = "vm-lb",
-    [string]$vmUi1 = "vm-ui1"
+    [string]$vmUi1 = "vm-ui1",
+    [string]$adminPw = "plato"
  )
 
 $FolderName = "C:\share"
