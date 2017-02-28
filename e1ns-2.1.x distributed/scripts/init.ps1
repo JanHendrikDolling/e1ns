@@ -1,4 +1,10 @@
-﻿$FolderName = "C:\share"
+﻿param (
+    [string]$vmDB = "vm-db",
+    [string]$vmLB = "vm-lb",
+    [string]$vmUi1 = "vm-ui1"
+ )
+
+$FolderName = "C:\share"
 $ShareName = "data"
 
 # create local folders
