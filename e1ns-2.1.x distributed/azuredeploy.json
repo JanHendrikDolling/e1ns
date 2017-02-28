@@ -56,7 +56,9 @@
     "vmDatabaseName-NIName": "[concat(variables('vmDatabaseName'),'-NetworkInterface')]",
     "vm-ui1-Name": "vm-ui1",
     "vm-ui1-NIName": "[concat(variables('vm-ui1-Name'),'-NetworkInterface')]",
-    "scriptURL": "abc"
+    "initExtensionName": "initScriptExtension",
+    "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
+    "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]"
   },
   "resources": [
     {
@@ -325,6 +327,27 @@
         }
       }
     },
+    {
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "name": "[variables('initExtensionName')]",
+  "apiVersion": "[variables('apiVersion')]",
+  "location": "[resourceGroup().location]",
+  "dependsOn": [
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
+  ],
+  "properties":
+    {
+      "publisher": "Microsoft.Compute",
+      "type": "CustomScriptExtension",
+      "typeHandlerVersion": "1.4",
+      "settings": {
+          "fileUris": [
+              "[variables('initScriptURL')]"
+          ],
+          "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -file init.ps1"
+      }
+   }
+  },
     {
       "name": "[variables('vm-ui1-NIName')]",
       "type": "Microsoft.Network/networkInterfaces",
