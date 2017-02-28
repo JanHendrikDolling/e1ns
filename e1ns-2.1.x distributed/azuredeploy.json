@@ -59,7 +59,6 @@
     "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
     "initExtensionName": "initScriptExtension",
     "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]",
-    "setupScriptURL": "[concat(variables('url-prefix'),'/scripts/setup.ps1')]",
     "initScriptExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file init.ps1 -adminUser ', parameters('adminUsername'), ' -vmDB ', variables('vmDatabaseName'), ' -vmLB ', variables('vmLB-Name'), ' -vmUi1 ', variables('vm-ui1-Name'))]"
   },
   "resources": [
