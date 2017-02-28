@@ -2,7 +2,7 @@
 $ShareName = "data"
 
 # create local folders
-it (!(TEST-PATH $FolderName)) { 
+if (!(TEST-PATH $FolderName)) { 
     NEW-ITEM $FolderName -type Directory
 }
 $SetupFolderName = $FolderName + "\setup"
