@@ -25,7 +25,6 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1_V2",
         "Standard_DS2_V2",
@@ -34,13 +33,12 @@
       ],
       "metadata": {
         "description": "Set this value for the frontend vmss size"
-      }
+      },
+      "defaultValue": "Standard_DS2_v2"
     },
     "vmSizeDB": {
       "type": "string",
-      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
-        "Standard_DS1_V2",
         "Standard_DS2_V2",
         "Standard_DS3_V2",
         "Standard_DS4_V2",
@@ -51,7 +49,8 @@
       ],
       "metadata": {
         "description": "Set this value for the database vmss size"
-      }
+      },
+      "defaultValue": "Standard_DS2_v2"
     }
   },
   "variables": {
