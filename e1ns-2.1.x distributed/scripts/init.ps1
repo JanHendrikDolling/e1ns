@@ -6,7 +6,7 @@
     [string]$vmUi2 = "vm-ui2",
     [string]$vmRep = "vm-rep",
     [string]$vmIndex = "vm-index",
-    [SecureString]$adminPw = "plato"
+    [Parameter(Mandatory=$true)][SecureString]$adminPw
  )
 
 $FolderName = "C:\share"

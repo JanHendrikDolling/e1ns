@@ -1,0 +1,13 @@
+e1ns.config.installation_type: e1ns load balancer (distributed installation)
+e1ns.checks.apply_validators: False
+e1ns.server.domain: vm-lb
+e1ns.server.port: 443
+protocol: https://
+cert_file: E:\exchange_public\Neuer Ordner (6)\e1ns_2.1\default\cert\sample_server.crt
+pkey_file: E:\exchange_public\Neuer Ordner (6)\e1ns_2.1\default\cert\sample_server.key
+e1ns.server.default_mountpoint: /ui/e1ns
+e1ns.server.sso.active: '0'
+e1ns.load_balancing.mountpoint:
+  /ui: balancer://e1ns_scio_portal_cluster
+e1ns.server.load_balance_urls:
+  e1ns_scio_portal_cluster: '["http://vm-ui1:8100/ui", "http://vm-ui1:8101/ui", "http://vm-ui2:8100/ui", "http://vm-ui2:8101/ui"]'

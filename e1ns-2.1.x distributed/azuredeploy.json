@@ -93,9 +93,13 @@
     "vm-index-Name": "vm-index",
     "vm-index-NIName": "[concat(variables('vm-index-Name'),'-NetworkInterface')]",
     "url-prefix": "https://raw.githubusercontent.com/JanHendrikDolling/e1ns/master/e1ns-2.1.x%20distributed",
+    "variableScriptURL": "[concat(variables('url-prefix'),'/scripts/variables.ps1')]",
     "initExtensionName": "initScriptExtension",
     "initScriptURL": "[concat(variables('url-prefix'),'/scripts/init.ps1')]",
-    "initScriptExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file init.ps1 -adminUser ', parameters('adminUsername'), ' -vmDB ', variables('vmDatabaseName'), ' -vmLB ', variables('vmLB-Name'), ' -vmUi1 ', variables('vm-ui1-Name'), ' -vmUi2 ', variables('vm-ui2-Name'), ' -vmRep ', variables('vm-rep-Name'), ' -vmIndex ', variables('vm-index-Name'))]"
+    "initScriptExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file init.ps1 -adminUser ', parameters('adminUsername'), ' -vmDB ', variables('vmDatabaseName'), ' -vmLB ', variables('vmLB-Name'), ' -vmUi1 ', variables('vm-ui1-Name'), ' -vmUi2 ', variables('vm-ui2-Name'), ' -vmRep ', variables('vm-rep-Name'), ' -vmIndex ', variables('vm-index-Name'))]",
+    "init2ExtensionName": "init2ExtensionName",
+    "init2ScriptURL": "[concat(variables('url-prefix'),'/scripts/local_init.ps1')]",
+    "init2ScriptExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -file local_init.ps1')]"
   },
   "resources": [
     {
@@ -299,6 +303,31 @@
         }
       }
     },
+    {
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "name": "[concat(variables('vmLB-Name'),'/',variables('init2ExtensionName'))]",
+  "apiVersion": "[variables('apiVersion')]",
+  "location": "[resourceGroup().location]",
+  "dependsOn": [
+    "[concat('Microsoft.Compute/virtualMachines/',variables('vmLB-Name'))]"
+  ],
+  "properties":
+    {
+      "publisher": "Microsoft.Compute",
+      "type": "CustomScriptExtension",
+      "typeHandlerVersion": "1.7",
+      "autoUpgradeMinorVersion":true,
+      "settings": {
+          "fileUris": [
+              "[variables('variableScriptURL')]",
+              "[variables('init2ScriptURL')]"
+          ]
+      },
+      "protectedSettings": {
+          "commandToExecute": "[concat(variables('init2ScriptExecute'))]"
+      }
+   }
+  },
    {
       "name": "[variables('vmDatabaseName-NIName')]",
       "type": "Microsoft.Network/networkInterfaces",
@@ -364,35 +393,6 @@
         }
       }
     },
-    {
-  "type": "Microsoft.Compute/virtualMachines/extensions",
-  "name": "[concat(variables('vmDatabaseName'),'/',variables('initExtensionName'))]",
-  "apiVersion": "[variables('apiVersion')]",
-  "location": "[resourceGroup().location]",
-  "dependsOn": [
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vmLB-Name'))]",
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vm-ui1-Name'))]",
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vm-ui2-Name'))]",
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vm-rep-Name'))]",
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vm-index-Name'))]",
-    "[concat('Microsoft.Compute/virtualMachines/',variables('vmDatabaseName'))]"
-  ],
-  "properties":
-    {
-      "publisher": "Microsoft.Compute",
-      "type": "CustomScriptExtension",
-      "typeHandlerVersion": "1.7",
-      "autoUpgradeMinorVersion":true,
-      "settings": {
-          "fileUris": [
-              "[variables('initScriptURL')]"
-          ]
-      },
-      "protectedSettings": {
-          "commandToExecute": "[concat(variables('initScriptExecute'), ' -adminPw ', parameters('adminPassword'))]"
-      }
-   }
-  },
   {
       "name": "[variables('vm-ui1-NIName')]",
       "type": "Microsoft.Network/networkInterfaces",

@@ -3,6 +3,10 @@
     [Parameter(Mandatory=$true)][string]$role
  )
 
+Write-Output $env:computername
+Write-Output $vmDB
+Write-Output $role
+
 
 $ShareName = "\\" + $vmDB + "\data"
 $ShareSetup = $ShareName + "\setup"
