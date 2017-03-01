@@ -3,6 +3,9 @@
     [string]$vmDB = "vm-db",
     [string]$vmLB = "vm-lb",
     [string]$vmUi1 = "vm-ui1",
+    [string]$vmUi2 = "vm-ui2",
+    [string]$vmRep = "vm-rep",
+    [string]$vmIndex = "vm-index",
     [string]$adminPw = "plato"
  )
 
@@ -41,4 +44,7 @@ $vmcred = new-object -typename System.Management.Automation.PSCredential -argume
 $scriptPath = "\\" + $vmDB + "\data\setup\setup.ps1"
 $argumentList = " -vmName " + $vmUi1 + " -vmDB " + $vmDB
 
-Invoke-Command -ComputerName $vmUi1 -ScriptBlock {Invoke-Expression "$scriptPath $argumentList"} -credential $vmcred
+Invoke-Command -ComputerName $vmUi1 -ScriptBlock {NEW-ITEM "c:\test123" -type Directory} -credential $vmcred
+Invoke-Command -ComputerName $vmUi2 -ScriptBlock {NEW-ITEM "c:\test123" -type Directory} -credential $vmcred
+
+# {Invoke-Expression "$scriptPath $argumentList"}
