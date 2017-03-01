@@ -34,7 +34,7 @@ Invoke-WebRequest -Method Get -Uri $scio_db -OutFile $SetupFolderName\db.zip ;
 Invoke-WebRequest -Method Get -Uri $e1ns -OutFile $SetupFolderName\setup_e1ns.exe ;
 Invoke-WebRequest -Method Get -Uri $e1ns_config -OutFile $SetupFolderName\e1ns_config.yml ;
 Invoke-WebRequest -Method Get -Uri $setup_script -OutFile $SetupFolderName\setup.ps1 ;
-
+Invoke-WebRequest -Method Get -Uri $invoke_script -OutFile $SetupFolderName\invoke.ps1 ;
 
 # create share
 New-SmbShare –Name $ShareName –Path $FolderName –FullAccess Everyone 
