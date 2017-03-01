@@ -38,13 +38,30 @@ Invoke-WebRequest -Method Get -Uri $setup_script -OutFile $SetupFolderName\setup
 # create share
 New-SmbShare –Name $ShareName –Path $FolderName –FullAccess Everyone 
 
+
+# add machines to the trusted hosts list using winrm
+
+Get-Item WSMan:\localhost\Client\TrustedHosts
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value $vmLB -Concatenate -force -confirm:$false
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value $vmUi1 -Concatenate -force -confirm:$false
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value $vmUi2 -Concatenate -force -confirm:$false
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value $vmRep -Concatenate -force -confirm:$false
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value $vmIndex -Concatenate -force -confirm:$false
+
+# login credentials
 $securepassword = ConvertTo-SecureString $adminPw -AsPlainText -Force
 $vmcred = new-object -typename System.Management.Automation.PSCredential -argumentlist $adminUser, $securepassword
 
+# install software 
 $scriptPath = "\\" + $vmDB + "\data\setup\setup.ps1"
-$argumentList = " -vmName " + $vmUi1 + " -vmDB " + $vmDB
+Invoke-Command -ComputerName $vmUi1 -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'ui'"} -credential $vmcred
+Invoke-Command -ComputerName $vmUi2 -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'ui'"} -credential $vmcred
+Invoke-Command -ComputerName $vmDB -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'db'"} -credential $vmcred
+Invoke-Command -ComputerName $vmRep -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'rep'"} -credential $vmcred
+Invoke-Command -ComputerName $vmIndex -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'index'"} -credential $vmcred
+Invoke-Command -ComputerName $vmLB -ScriptBlock {Invoke-Expression "$scriptPath -vmDB $vmDB -role 'lb'"} -credential $vmcred
 
-Invoke-Command -ComputerName $vmUi1 -ScriptBlock {NEW-ITEM "c:\test123" -type Directory} -credential $vmcred
-Invoke-Command -ComputerName $vmUi2 -ScriptBlock {NEW-ITEM "c:\test123" -type Directory} -credential $vmcred
+# configure software
 
-# {Invoke-Expression "$scriptPath $argumentList"}
+
+# start System

@@ -1,6 +1,6 @@
 ﻿param (
     [string]$vmDB = "vm-db",
-    [Parameter(Mandatory=$true)][string]$vmName
+    [Parameter(Mandatory=$true)][string]$role
  )
 
 
